@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itcast.dao.ICommodityInventoryDao">
+	<!-- 库存信息总条数查询 -->
+	<select id="selectCIAccount" resultType="java.lang.Integer">
+		SELECT COUNT(*) count FROM Products du,ProductCategory ca,ProductInventory inv WHERE du.CategoryId=ca.CategoryId AND du.ProductId=inv.ProductId 
+		<if test="productId != null and productId != '' ">
+			 and du.ProductId LIKE #{productId}
+		</if>
+		<if test=" productName != null and productName != '' ">
+			 and du.ProductName LIKE #{productName}
+		</if>
+		<if test="categoryId != null and categoryId > 0">
+			 and du.CategoryId = #{categoryId}
+		</if>
+		<if test="warningCount != null ">
+			 or inv.totalCount = #{warningCount}
+		</if>
+		<if test="upperLimit != null">
+			 and inv.totalCount-inv.maxCount > #{upperLimit}
+		</if>
+		<if test="floor != null">
+			 and inv.minCount-inv.totalCount > #{floor}
+		</if>
+		 order by du.productId limit 0,#{pageSize} 
+	</select>
+	<!-- 库存信息查询 -->
+	<select id="selectCI" resultType="cn.itcast.vo.CommodityI">
+		select du.productId,du.productName,du.unit,du.categoryId,inv.totalCount,inv.minCount,inv.maxCount,inv.statusId 
+		from Products du,ProductCategory ca,ProductInventory inv where du.categoryId=ca.categoryId and du.productId=inv.productId
+		<if test="productId != null and productId != '' ">
+			 and du.ProductId LIKE #{productId}
+		</if>
+		<if test=" productName != null and productName != '' ">
+			 and du.ProductName LIKE #{productName}
+		</if>
+		<if test="categoryId != null and categoryId > 0">
+			 and du.CategoryId = #{categoryId}
+		</if>
+		<if test="warningCount != null ">
+			 or inv.totalCount = #{warningCount}
+		</if>
+		<if test="upperLimit != null">
+			 and inv.totalCount-inv.maxCount > #{upperLimit}
+		</if>
+		<if test="floor != null">
+			 and inv.minCount-inv.totalCount > #{floor}
+		</if>
+		 order by du.productId limit #{startIndex},#{pageSize}
+	</select>
+	
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.itcast.dao.IGoodsMaintenanceDao">
+	<!-- 查询商品总条数模糊查询 -->
+	<select id="spMAccount" resultType="java.lang.Integer">
+		SELECT COUNT(*) count FROM Products du,ProductCategory ca,ProductInventory ins 
+		WHERE du.CategoryId=ca.CategoryId AND du.ProductId=ins.ProductId 
+		<if test="sEncode !=null and sEncode !=''"> and du.ProductId LIKE #{sEncode} </if>
+		<if test="sName !=null and sName!=''"> and du.ProductName LIKE #{sName} </if>
+		<if test="categoryId !=null and categoryId > 0 and categoryId!=''"> and du.CategoryId = #{categoryId} </if>
+		 order by du.productId limit 0,#{pageSize} 
+	</select>
+	<!-- 查询商品信息 -->
+	<select id="selectGMs" resultType="cn.itcast.vo.GoodsPreserve">
+		select du.productId,du.productName,du.unitPrice,du.unit,du.discount,du.categoryId,ca.categoryName,inv.totalCount 
+		from Products du,ProductCategory ca,ProductInventory inv where du.categoryId=ca.categoryId and du.productId=inv.productId
+		<if test="sEncode !=null and sEncode !=''"> and du.ProductId LIKE #{sEncode} </if>
+		<if test="sName !=null and sName!=''"> and du.ProductName LIKE #{sName} </if>
+		<if test="categoryId !=null and categoryId > 0 and categoryId!=''"> and du.CategoryId = #{categoryId} </if>
+		order by du.productId limit #{startIndex},#{pageSize} 
+	</select>
+	
+</mapper>
